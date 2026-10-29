@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -u
+
+# umbreld stores user files under ${UMBREL_ROOT}/{home,external,network}. Home
+# always exists; external and network are only created lazily by umbreld when a
+# drive is attached or a share is configured. This app bind-mounts all three as
+# Docker Compose volume sources, so they must exist before the containers start
+# or 'docker compose up' fails with "invalid mount config".
+
+ensure_dir() {
+	local dir="$1"
+	if [ ! -d "$dir" ]; then
+		mkdir -p -- "$dir" 2>/dev/null || true
+		chown 1000:1000 -- "$dir" 2>/dev/null || true
+	fi
+}
+
+ensure_dir "${APP_DATA_DIR}/data/roots"
+ensure_dir "${APP_DATA_DIR}/data/config"
+ensure_dir "${UMBREL_ROOT:-/home/umbrel/umbrel}/home"
+ensure_dir "${UMBREL_ROOT:-/home/umbrel/umbrel}/external"
+ensure_dir "${UMBREL_ROOT:-/home/umbrel/umbrel}/network"

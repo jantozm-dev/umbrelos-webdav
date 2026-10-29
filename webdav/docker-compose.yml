@@ -1,0 +1,40 @@
+services:
+  app_proxy:
+    environment:
+      APP_HOST: webdav_web_1
+      APP_PORT: "3923"
+      # WebDAV clients cannot present Umbrel's browser login cookie, and the
+      # app enforces its own login, so the proxy auth layer is disabled.
+      PROXY_AUTH_ADD: "false"
+
+  web:
+    image: copyparty/ac:1.20.26@sha256:b2054d65e05daa8982ca17c26b12b74315c0ce586a03ff9018a59c80731b9e19
+    user: "1000:1000"
+    restart: on-failure
+    stop_grace_period: 15s
+    # The account password is umbrelOS's own per-install app password; it is
+    # passed on the command line so that config changes in Umbrel (which
+    # re-render the compose file) immediately pick up a rotated password.
+    # Everything else is configured in data/config/copyparty.conf.
+    command: ["-a", "umbrel:${APP_PASSWORD}"]
+    environment:
+      PYTHONUNBUFFERED: "1"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q 127.0.0.1:3923/?reset=/._"]
+      interval: 1m
+      timeout: 2s
+      retries: 5
+      start_period: 15s
+    volumes:
+      # copyparty.conf and the thumbnail/file-index cache (hist) live in app
+      # data so nothing is written into the user's folders just to serve them.
+      - ${APP_DATA_DIR}/data/config:/cfg
+      # /roots is itself a bind mount on a real filesystem. Without this, the
+      # volume root would resolve to the container's overlay fs and copyparty
+      # would disable write access as a "ramdisk" safety measure.
+      - ${APP_DATA_DIR}/data/roots:/roots
+      # Whole user storage roots by default; each one can be narrowed to a
+      # specific folder in App Settings → Storage → Access to your folders.
+      - ${UMBREL_ROOT}/home:/roots/Home
+      - ${UMBREL_ROOT}/external:/roots/External
+      - ${UMBREL_ROOT}/network:/roots/Network

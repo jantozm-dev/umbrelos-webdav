@@ -1,0 +1,78 @@
+manifestVersion: 1.1
+id: webdav
+storage:
+  dataRoot: data
+folderAccess:
+  - id: home
+    name: Home
+    note: Shares your umbrelOS Home folder. Pick a specific folder in Home instead to share only that folder.
+    mounts:
+      - service: web
+        targetPath: /roots/Home
+        readOnly: false
+  - id: external
+    name: External drive
+    note: Shares the drives shown under External in the umbrelOS Files app. Pick a folder on a drive instead to share only that folder.
+    mounts:
+      - service: web
+        targetPath: /roots/External
+        readOnly: false
+  - id: network
+    name: Network share
+    note: Shares the locations shown under Network in the umbrelOS Files app. Pick a folder inside a share instead to share only that folder.
+    mounts:
+      - service: web
+        targetPath: /roots/Network
+        readOnly: false
+category: files
+name: WebDAV
+version: v1.20.26
+tagline: Browse your Umbrel files in a modern file manager and mount them over WebDAV
+description: >-
+  Your umbrelOS files as a real WebDAV server, powered by copyparty. The app
+  shows your Home folder, external drives, and network shares at once, with
+  drag-and-drop uploads, background upload progress, renaming, moving, file and
+  folder creation, deletion, thumbnails for photos and videos, star/flag files,
+  and zip downloads.
+
+
+  Browser file manager and settings: open the app to browse everything, and use
+  the built-in control panel (bottom left) for the Connect page with copy-paste
+  instructions for macOS Finder, Windows Explorer, Linux, Android apps, and
+  rclone. No configuration needed in-app.
+
+
+  WebDAV endpoint: the same app URL works for WebDAV clients —
+  `http://umbrel.local:3919/` (or `https://` on trusted setups). Sign in with
+  username `umbrel` and the password shown under Settings → Default credentials
+  on this app's card. The password is generated per install by umbrelOS and is
+  not stored in this package.
+
+
+  Choose what is shared: all three storage roots are shared by default. Want
+  only one folder shared? Open this app's Settings → Storage → Access to your
+  folders and narrow Home, External drive, or Network share to any folder you
+  like; umbrelOS remounts it and restarts the app.
+
+
+  Works with Finder, Windows Explorer (map network drive), rclone, Joplin,
+  Zotero, Cyberduck, and other WebDAV clients. Use HTTPS when connecting over
+  an untrusted network.
+releaseNotes: >-
+  Rebuilt on copyparty 1.20.26: a modern file manager with drag-drop uploads,
+  progress, thumbnails, control panel, connect instructions, and dark UI.
+  WebDAV folder creation and file management now work reliably, and all three
+  umbrelOS storage roots (Home, External drives, Network shares) are exposed
+  by default and selectable per app.
+developer: ed (9001)
+website: https://github.com/9001/copyparty
+dependencies: []
+repo: https://github.com/9001/copyparty
+support: https://github.com/9001/copyparty/issues
+port: 3919
+gallery: []
+path: ""
+defaultUsername: "umbrel"
+deterministicPassword: true
+submitter: janto
+submission: https://github.com/getumbrel/umbrel-apps/pulls
